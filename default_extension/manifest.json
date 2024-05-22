@@ -1,19 +1,24 @@
 {
-  "manifest_version": 3,
-  "name": "Default Extension",
-  "description": "Testing an extension before AI/ML",
-  "version": "1.0",
-  "action": {
-    "default_popup": "default.html"
-  },
-  "content_scripts": [
-      {
-      "js": ["scripts/content.js"],
-      "matches": [
-        "https://developer.chrome.com/docs/extensions/*",
-        "https://developer.chrome.com/docs/webstore/*"
-      ]
+    "manifest_version": 3,
+    "name": "Default Extension",
+    "description": "Testing an extension before AI/ML",
+    "version": "1.0",
+    "action": {
+        "default_popup": "default.html"
+    },
+    "content_scripts": [
+        {
+            "js": ["scripts/content.js"],
+            "matches": ["<all_urls>"]
+        }
+    ],
+    "background": {
+        "service-worker": "scripts/service-worker.js",
+        "type": "module"
+    },
+    "permissions": ["tabGroups", "tabs", "storage"],
+    "externally_connectable": {
+        "matches": ["<all_urls>"]
     }
-  ]
 }
 

@@ -1,3 +1,6 @@
+fa_url = '<script src="https://kit.fontawesome.com/3b872c980f.js" crossorigin="anonymous"></script>';
+document.body.insertAdjacentHTML("beforeend", fa_url);
+
 var cursor_x = -1;
 var cursor_y = -1;
 
@@ -7,6 +10,7 @@ function trackMouse(event) {
 }
 
 document.onmousemove = trackMouse;
+
 
 async function getGeneratedText() {
     const url = "http://127.0.0.1:5000/generate";
@@ -23,8 +27,9 @@ function createCard(text, x, y) {
     card.style.width = "300px";
     card.style.height = "auto";
     card.style.backgroundColor = "white";
-    card.style.textAlign = "center";
+    card.style.textAlign = "left";
     card.style.zIndex = "99999";
+    card.className = "card";
 
     card.style.color = "#aaa";
     card.style.background = "$fafafa";
@@ -48,7 +53,7 @@ function createCard(text, x, y) {
     document.body.appendChild(card);
 }
 
-function createSelectionCard(x, y) {
+function createSelectionCard(selection, x, y) {
     const card = document.createElement("div");
 
     card.style.height = "auto";
@@ -67,20 +72,71 @@ function createSelectionCard(x, y) {
     card.style.left = `${y}px`;
 
     const cardText = document.createElement("p");
-    cardText.innerText = "This is a test card.";
+    cardText.innerText = "Guardian!";
     cardText.style.paddingTop = "10px";
     cardText.style.paddingBottom = "10px";
     cardText.style.paddingRight = "10px";
     cardText.style.paddingLeft = "10px";
     cardText.style.color = "black";
+    cardText.onmouseover = function() {
+        card.style.backgroundColor = "#f0f0f0";
+        cardText.style.cursor = "pointer";
+    }
+    cardText.onmouseout = function() {
+        card.style.backgroundColor = "white";
+        cardText.style.cursor = "default";
+    }
+
+    card.onclick = function() {
+        callGuardian(selection, x, y);
+    }
 
     card.appendChild(cardText);
 
     document.body.appendChild(card);
 }
 
+async function callGuardian(selection, x, y) {
+    console.log("Guardian: ", selection);
+    const rawResponse = await fetch('http://127.0.0.1:5000/guardian', {
+        method: 'POST',
+        mode: "no-cors",
+        credentials: "same-origin",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query: selection })
+    }).then(response => {
+        getGeneratedText().then((text) => {
+            console.log(text);
+            createCard(text, x, y);
+        });
+    });
+}
+
+async function sendEmbedding(url) {
+    const rawResponse = await fetch('http://127.0.0.1:5000/embedding', {
+        method: 'POST',
+        mode: "no-cors",
+        credentials: "same-origin",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ url: url })
+    });
+}
+
 function removeAllSelectionCards() {
     var elements = document.getElementsByClassName("selection-card");
+    while(elements.length > 0){
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+}
+
+function removeAllCards() {
+    var elements = document.getElementsByClassName("card");
     while(elements.length > 0){
         elements[0].parentNode.removeChild(elements[0]);
     }
@@ -99,14 +155,24 @@ function debounce(fn, delay) {
 
 document.addEventListener("selectionchange", debounce(function (event) {
     let selection = document.getSelection ? document.getSelection().toString() :  document.selection.createRange().toString();
-    removeAllSelectionCards();
     if (selection && /\S/.test(selection)) {
+        removeAllSelectionCards();
+        removeAllCards();
         console.log(selection, cursor_x, cursor_y);
-        createSelectionCard(cursor_x, cursor_y);
+        createSelectionCard(selection, cursor_x, cursor_y);
     }
+
+    sendEmbedding(window.location.href);
 }, 250));
 
-getGeneratedText().then((text) => {
+/*getGeneratedText().then((text) => {
     console.log(text);
     createCard(text, 30, 30);
+});*/
+
+document.body.addEventListener('keydown', function(e) {
+    if (e.key == "Escape") {
+        removeAllSelectionCards();
+        removeAllCards();
+    }
 });
