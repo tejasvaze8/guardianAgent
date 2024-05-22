@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Flask App</title>
+</head>
+<body>
+    <h1>Hello, Flask!</h1>
+    {% if promptGen: %}
+    <p>Generated image:</p>
+    <img src="{{ url_for('upload', filename=path) }}" width="400" />
+    {% else %}
+    <p>Write a path with your desired prompt to display the picture.</p>
+    {% endif %}
+</body>
+</html>
