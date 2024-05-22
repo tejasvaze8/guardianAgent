@@ -1,3 +1,7 @@
+window.onload = function() {
+    sendEmbedding(window.location.href);
+}
+
 fa_url = '<script src="https://kit.fontawesome.com/3b872c980f.js" crossorigin="anonymous"></script>';
 document.body.insertAdjacentHTML("beforeend", fa_url);
 
@@ -26,10 +30,13 @@ function createCard(text, x, y) {
 
     card.style.width = "300px";
     card.style.height = "auto";
+    card.style.maxHeight = "300px";
     card.style.backgroundColor = "white";
     card.style.textAlign = "left";
     card.style.zIndex = "99999";
     card.className = "card";
+    card.style.overflow = "auto";
+    card.style.overflowY = "auto";
 
     card.style.color = "#aaa";
     card.style.background = "$fafafa";
@@ -161,14 +168,8 @@ document.addEventListener("selectionchange", debounce(function (event) {
         console.log(selection, cursor_x, cursor_y);
         createSelectionCard(selection, cursor_x, cursor_y);
     }
-
-    sendEmbedding(window.location.href);
 }, 250));
 
-/*getGeneratedText().then((text) => {
-    console.log(text);
-    createCard(text, 30, 30);
-});*/
 
 document.body.addEventListener('keydown', function(e) {
     if (e.key == "Escape") {
