@@ -2,6 +2,8 @@
 
 We were inspired by Co-pilot AI, which supports coders during development. We aimed to create a plug-in that works with the data encountered in your web browser, providing insights for writing and general learning. Whether crafting an email, research paper, or documentation, our tool assists you as you write. For learning, it offers visual support by generating images or providing example data to help work through solutions. As students, we believed having an agent by your side would enhance your learning experience beyond just the code you write.
 
+Devpost Link: [Guardian Agent](https://devpost.com/software/guardian-agent-sluxp6)
+
 ## What it does
 
 The plug-in leverages Bedrock to provide multiple LLMs. When you highlight text, Guardian displays useful information from the LLMs to guide you through your work. Websites you encounter during research are stored in Convex, which is later used to provide better insights based on your browsing history. During the learning process, you can also generate images based on your needs, such as flowcharts and diagrams, to aid in understanding complex concepts.
